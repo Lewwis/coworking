@@ -1,0 +1,17 @@
+{
+  "databaseChangeLog": [
+    {
+      "changeSet": {
+        "id": "1",
+        "author": "LuisR",
+        "changes": [
+          {
+            "createCollection": {
+              "collectionName": "users"
+            }
+          }
+        ]
+      }
+    }
+  ]
+}

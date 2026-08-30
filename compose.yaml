@@ -1,0 +1,38 @@
+version: '3.8'
+
+services:
+  mongodb:
+    image: mongo:latest
+    container_name: mongodb_container
+    restart: always
+    ports:
+      - "27017:27017"
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: admin
+      MONGO_INITDB_ROOT_PASSWORD: secret
+      MONGO_INITDB_DATABASE: coworking_db
+    volumes:
+      - mongo_data:/data/db
+    healthcheck:
+      test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  liquibase:
+    image: liquibase/liquibase:latest
+    container_name: liquibase_runner
+    depends_on:
+      mongodb:
+        condition: service_healthy
+    volumes:
+      - ./liquibase:/liquibase/changelog
+      - ./liquibase/lib:/liquibase/lib
+    command:
+      - --changelog-file=db.changelog-root.json
+      - --url=mongodb://admin:secret@mongodb:27017/coworking_db?authSource=admin
+      - --driver=liquibase.ext.mongodb.database.MongoClientDriver
+      - update
+
+volumes:
+  mongo_data:

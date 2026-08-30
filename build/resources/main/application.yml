@@ -1,0 +1,5 @@
+spring:
+  application:
+    name: Coworking
+  mongodb:
+    uri: mongodb://admin:secret@localhost:27017/coworking_db?authSource=admin
